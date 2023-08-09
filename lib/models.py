@@ -26,6 +26,7 @@ class Scenes(Base):
     choice_A_next_scene = Column(Integer)
     choice_B = Column(String)
     choice_B_next_scene = Column(Integer)
+    wolf = Column(String)
     # def __repr__(self):
     #     return f"'\n'Scene Number: {self.scene_num}'\n' description: {self.description}'\n' Choice A: {self.choice_A}'\n' Choice B: {self.choice_B} '\n'"
         
