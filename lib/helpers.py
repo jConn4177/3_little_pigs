@@ -1,6 +1,7 @@
 from ipdb import set_trace
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from models import Character, Scene, Pig, Wolf
 import time
 
 from models import Characters, Scenes, Story, Storyline
@@ -29,7 +30,45 @@ def print_rapidly(output):
         # time.sleep(0)
     print()
 
+def set_up_story(pigchoice, wolfchoice):
+    pigname=""
+    if pigchoice == "A":
+        pigname = "Albert"
+    elif pigchoice == "B":
+        pigname = "Brenda"
+    else:
+        pigname = "Charlie"
+    pig = session.query(Pig).filter(Pig.name == pigname)
+    #needs to remember the Pig name that's chosen because that will determine which scene he goes to
+    #Albert & Brenda go to (5,6) after choosing their wolf, Charlie goes to (15,16) depending on his wolf
 
+    wolfname=""
+    if wolfchoice == "A":
+        wolfname = "THE Wolf"
+    else:
+        pigname = "BB Wolf"
+    wolf = session.query(Wolf).filter(Wolf.name == wolfname)
+
+def advance_to_next_scene(next_scene, choice_A_next_scene, choice_B_next_scene):
+    clear()
+    print(next_scene.description)
+    print("""
+          A = choiceA
+          B = choiceB
+          """)
+    choice = input('>>> ')
+
+    if choice == "A":
+        clear()
+        print(choice_A_next_scene)
+        # how do i set it to the correct next scene?
+
+    if choice == "B":
+        clear()
+        print(choice_B_next_scene)
+        # how do i set it to the correct next scene?
+
+    #also elif choiceA = return to main menu then return to main menu
 
 
 
