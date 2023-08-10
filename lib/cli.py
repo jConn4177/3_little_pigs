@@ -2,101 +2,197 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from ipdb import set_trace
 
-from models import Characters, Scenes, Story, Storyline, choice_A_next_scene, choice_B_next_scene
+from db.models import Character, Scene, Story, Storyline
 from helpers import *
 import time
+import os
 
-engine = create_engine('sqlite:///3_little_pigs.db')
+engine = create_engine('sqlite:///db/3_little_pigs.db')
 session = sessionmaker(bind=engine)()
 
-if __name__ == "__main__":
-  
-  def main_menu():
-    while True:
-        print_slowly("3 Little Pigs - choose your own adventure")
-        print("""
-                                                        (
-                                                      (  )
-                             .____.            ,-.  __)
-             \|/            //====\\        ,-' o `-!|
-           .'+^+'.         //======\\    ,-'---------`-.
-         .'///|\\\\'.     //========\\    | [+]   [+] |          .-------------.
-        //////|\\\\\\\   //|||''''|||\\   |    ___    |         <   huff, puff  >
-       /((|||^..^|||))\  |||||^..^|||||   |   |   |   |    //    `--v----------'
-        ((|||(oo)|||)    |||||(oo)|||||   |   |'  |   |   |..~~~O
-                                                         {   ~vv'
-                                                            |
-                                                            >O<
+CURRENT_STORY = None
+CURRENT_SCENE = None
+
+def display_welcome():
+     print_slowly("3 Little Pigs - choose your own adventure")
+
+def display_main_menu():
+
+        print_slowly("Way back in Once upon a time time, there were three little pigs, all siblings. The first little big, Albert, was VERY lazy. He didn't want to work very hard so he wants to build his house out of straw.")
+        print_slowly("The second little pig, Brenda, worked a little bit harder but was still a little lazy so she wants to build her house out of twigs.")
+        print_slowly("The third little pig, Charlie, worked very hard and so he wants to build his house out of bricks.")
+        print_kinda_slow("""
+                                                          (
+                                                           (  )
+                                  .____.             ,-.  __)
+                 \|/             //====\\         ,-' o `-!|
+               .'+^+'.          //======\\     ,-'---------`-.
+             .'///|\\\\'.      //========\\     | [+]   [+] |
+            //////|\\\\\\\    //|||''''|||\\    |    ___    |
+                           /((|||^..^|||))\   |||||^..^|||||    |   |   |   |
+            ((|||(oo)|||)     |||||(oo)|||||    |   |'  |   |  
+                Albert           Brenda          Charlie                                            
+                                                                                             
                 """)
-        print("Way back in Once upon a time time, there were three little pigs all siblings. The first little big, Albert, was VERY lazy. He didn't want to work very hard so he wants to build his house out of straw.")
-        print("The second little pig, Brenda, worked a little bit harder but was still a little lazy so she wants to build her house out of twigs.")
-        print("The third little pig, Charlie, worked very hard and so he wants to build his house out of bricks.")
         print("First you get to pick which pig you'd like to be:")
-    
-        print("""
+        print_kinda_slow("""
+               _____
+            ^..^     \9
+            (oo)_____/
+                WW WW              
+            
             Pigs:
             A = Albert, a straw house
             B = Brenda, a twig house
             C = Charlie, a brick house
             """)
         pigchoice = input('>>> ')
-        print("""
+        handle_pig_choice(pigchoice)
+
+def handle_pig_choice(pigchoice):
+        pigname=""
+        if pigchoice == "A":
+            pigname = "Albert"
+        elif pigchoice == "B":
+            pigname = "Brenda"
+        else:
+            pigname = "Charlie"
+        pig = get_pig(pigname)
+        save_pig(pig)
+        choose_your_neighbor(pig)
+        return pig
+
+def choose_your_neighbor(pig):
+
+        print_kinda_slow("""
+                               .
+                              / V\
+                            / `  /
+                          <<   |
+                          /    |
+                        /      |
+                      /        |
+                     /    \  \ /
+                    (      ) | |
+            _______ |   _/_  | |
+          __________\______)\__)
+
+              Choose your neighbor:
               Wolf:
               A = THE Wolf
               B = BB Wolf
               """)
         wolfchoice = input('>>> ')
-        set_up_story(pigchoice, wolfchoice)
-        main_menu()
+        return pig, wolfchoice
 
-        current_scene = scene_4
+def handle_neighbor_choice(pig, wolfchoice):
+        wolfname=""
+        if wolfchoice == "A":
+            wolfname = "THE Wolf"
+        else:
+            wolfname = "BB Wolf"
+        wolf = get_wolf(wolfname)
+        save_wolf(wolf)
+        # set_up_story(pig, wolf)
+        return pig, wolf
 
-        while current_scene is not None:
-           advance_to_next_scene(current_scene, choice_A_next_scene, choice_B_next_scene)
-           current_scene = advance_to_next_scene
+def set_up_story(pig, wolf):
+        start_scene = 4
+        if (pig.name == "Albert" or pig.name == "Brenda") and wolf.name == "THE Wolf":
+             start_scene = 5
+        elif (pig.name == "Albert" or pig.name == "Brenda") and wolf.name == "BB Wolf":
+             start_scene = 6
+        elif pig.name == "Charlie" and wolf.name == "THE Wolf":
+             start_scene = 15
+        elif pig.name == "Charlie" and wolf.name == "BB Wolf":
+             start_scene = 16
+        scene_1 = session.query(Scene).filter(Scene.scene_num == start_scene).first()
+        story = Story(hero_id = pig.id, antagonist_id = wolf.id)
+        #also want the option to go back, deleting the last decision made from the storyline
+        session.add(story)
+        session.commit()
+        storyline = Storyline(story_id = story.id, scene_id = scene_1.id)
+        global CURRENT_STORY
+        global CURRENT_SCENE
+        CURRENT_STORY = story
+        CURRENT_SCENE = scene_1
+        display_current_scene()
 
- #-----------------------------   
+def display_current_scene():
+    os.system("clear")
+    global CURRENT_SCENE
+    global CURRENT_STORY
+    print_slowly(CURRENT_SCENE.description)
+    print_slowly(f"A - {CURRENT_SCENE.choice_A}")
+    print_slowly(f"B - {CURRENT_SCENE.choice_B}")
+    print_slowly("C - go back")
+    choice = input('>>> ')
+    if choice == "C":
+         os.system("clear")
+         print("Going back")
+    elif choice == "A":
+        os.system("clear")
+        CURRENT_SCENE = session.query(Scene).filter(Scene.scene_num == CURRENT_SCENE.choice_A_next_scene).first()
+        Storyline(story_id = CURRENT_STORY.id, scene_id = CURRENT_SCENE.id)
+        display_current_scene()
+        
+    else:
+        os.system("clear")
+        CURRENT_SCENE = session.query(Scene).filter(Scene.scene_num == CURRENT_SCENE.choice_B_next_scene).first()
+        Storyline(story_id = CURRENT_STORY.id, scene_id = CURRENT_SCENE.id)
+        display_current_scene()
 
-        # moved this to a helper function 
-        # print(scene_4.description)
-        # print("""
-        #        A = choiceA
-        #        B = choiceB
-        #    """)
-        # choice = input('>>> ')
-        # if choice == "A":
-        #     clear()
-        #     print(choice_A_next_scene)
-        # if choice == "B":
-        #     clear()
-        #     print(choice_B_next_scene)
+def the_end():
+     pass
 
-# instead of repeating this with each scene
-# #scene_5
-#     print(scenes.scene_num.5.description)
-#     print("""
-#           A = choiceA
-#           B = choiceB
-#           """)
-#     choice = input('>>> ')
-#     if choice == "A":
-#        clear()
-#        print(choice_A_next_scene)
-#     if choice == "B":
-#        clear()
-#        print(choice_B_next_scene)
+#scene 7
+#print("""
+    
+#                         (
+#                           )     (
+#                    ___...(-------)-....___
+#                .-""       )    (          ""-.
+#          .-'``'|-._             )         _.-|
+#         /  .--.|   `""---...........---""`   |
+#        /  /    |                             |
+#        |  |    |                             |
+#         \  \   |                             |
+#          `\ `\ |                             |
+#            `\ `|                             |
+#            _/ /\                             /
+#           (__/  \                           /
+#        _..---""` \                         /`""---.._
+#     .-'           \                       /          '-.
+#    :               `-.__             __.-'              :
+#    :                  ) ""---...---"" (                 :
+#     '._               `"--...___...--"`              _.'
+#       \""--..__                              __..--""/
+#        '._     """----.....______.....----"""     _.'
+#           `""--..,,_____            _____,,..--""`
+#                         `"""----"""`
+#  or 
+#     ( (
+#      ) )
+#   ........
+#  |        |]
+#   \      /    
+#    `----'
 
-# #scene_6
-#     print(scenes.scene_num.6.description)
-#     print("""
-#           A = choiceA
-#           B = choiceB
-#           """)
-#     choice = input('>>> ')
-#     if choice == "A":
-#        clear()
-#        print(choice_A_next_scene)
-#     if choice == "B":
-#        clear()
-#        print(choice_B_next_scene)
-       
+# """)
+# scene 19
+    #           (
+    #            )  )
+    #        ______(____
+    #       (___________)
+    #       /           \
+    #      /             \
+    #     |               |
+    #  ____\             /____
+    # ()____'.__     __.'____()
+    #      .'` .'```'. `-.
+    #     ().'`       `'.()
+
+if __name__ == "__main__":
+    display_welcome()
+    while True:
+        display_main_menu() 
