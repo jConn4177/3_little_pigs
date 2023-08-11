@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from db.models import Character, Story
+from db.models import Character, Story, Storyline
 import time
 
 engine = create_engine('sqlite:///db/3_little_pigs.db')
@@ -43,3 +43,6 @@ def get_pig(pigname):
 def get_wolf(wolfname):
     wolf = session.query(Character).filter(Character.name == wolfname).first()
     return wolf
+
+def get_last_storyline():
+    return session.query(Storyline).order_by(Storyline.id.desc()).first()

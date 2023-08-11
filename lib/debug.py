@@ -6,7 +6,7 @@ from models import *
 
 if __name__ == '__main__':
 
-  engine = create_engine('sqlite:///3_little_pigs.db')
+  engine = create_engine('sqlite:///db/3_little_pigs.db')
   session = sessionmaker(bind=engine)()
   print("Session Created...")
 
