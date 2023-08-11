@@ -1,7 +1,6 @@
-from ipdb import set_trace
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from db.models import Character, Scene, Story
+from db.models import Character, Story
 import time
 
 engine = create_engine('sqlite:///db/3_little_pigs.db')

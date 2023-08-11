@@ -1,10 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from ipdb import set_trace
 
-from db.models import Character, Scene, Story, Storyline
+from db.models import Scene, Story, Storyline
 from helpers import *
-import time
 import os
 
 engine = create_engine('sqlite:///db/3_little_pigs.db')
@@ -50,17 +48,17 @@ def display_main_menu():
         handle_pig_choice(pigchoice)
 
 def handle_pig_choice(pigchoice):
-        pigname=""
-        if pigchoice == "A":
-            pigname = "Albert"
-        elif pigchoice == "B":
-            pigname = "Brenda"
-        else:
-            pigname = "Charlie"
-        pig = get_pig(pigname)
-        save_pig(pig)
-        choose_your_neighbor(pig)
-        return pig
+    pigname = ""
+    if pigchoice.lower() == "a":
+        pigname = "Albert"
+    elif pigchoice.lower() == "b":
+        pigname = "Brenda"
+    else:
+        pigname = "Charlie"
+    pig = get_pig(pigname)
+    save_pig(pig)
+    print(pig.name)
+    choose_your_neighbor(pig)
 
 def choose_your_neighbor(pig):
 
@@ -83,18 +81,17 @@ def choose_your_neighbor(pig):
               B = BB Wolf
               """)
         wolfchoice = input('>>> ')
-        return pig, wolfchoice
+        handle_neighbor_choice(pig, wolfchoice)
 
 def handle_neighbor_choice(pig, wolfchoice):
         wolfname=""
-        if wolfchoice == "A":
+        if wolfchoice.lower == "a":
             wolfname = "THE Wolf"
         else:
             wolfname = "BB Wolf"
         wolf = get_wolf(wolfname)
         save_wolf(wolf)
-        # set_up_story(pig, wolf)
-        return pig, wolf
+        set_up_story(pig, wolf)
 
 def set_up_story(pig, wolf):
         start_scene = 4
