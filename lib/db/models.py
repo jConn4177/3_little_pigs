@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -22,6 +23,8 @@ class Scene(Base):
     choice_B = Column(String())
     choice_B_next_scene = Column(Integer())
     wolf = Column(String())
+    # previous_scene_id = Column(Integer, ForeignKey('scenes.id'))
+    # previous_scene = relationship('Scene', remote_side=[id])
         
 class Story(Base):
     __tablename__ = "stories"

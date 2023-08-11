@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from models import Character, Scene
 
 if __name__ == "__main__":
-    engine = create_engine("sqlite:///3_little_pigs.db")
+    engine = create_engine("sqlite:///db/3_little_pigs.db")
     Session = sessionmaker(bind=engine)
     session = Session()
 
@@ -41,7 +41,7 @@ if __name__ == "__main__":
     choice_A_next_scene=7, 
     choice_B="refuse", 
     choice_B_next_scene=8, 
-    wolf="THE Wolf"
+    wolf="THE Wolf",
     )
     scene_6 = Scene(
     scene_num=6, 
@@ -135,7 +135,7 @@ if __name__ == "__main__":
     scene_17 = Scene(
         scene_num=17, 
         description="It's your neighbor THE Wolf. He introduces himself 'Hello neighbor, I'm Theodore Harold Edgar Wolf. So sorry to bother you but could you spare some hot tea? I seem to find myself with a cold AAACHOOOO!' He sneezes a great sneeze. Nothing happens. You peek your head out the door and you invite the wolf in for tea and end up talking. He\'s actually vegetarin and doesn\'t eat meat. You now have a friend for life. THE END", 
-        choice_A="return to main menu", 
+        choice_A="back to main menu", 
         wolf="THE Wolf"
         )
     scene_18 = Scene(    
@@ -154,8 +154,8 @@ if __name__ == "__main__":
         wolf="BB Wolf"
         )
     scene_20 = Scene(
-    scene_num=20,
-    description="BB Wolf comes down the chimney and EATS YOU AND YOUR SIBLINGS! THE END"
+        scene_num=20,
+        description="BB Wolf comes down the chimney and EATS YOU AND YOUR SIBLINGS! THE END"
         )
     
     scenes = [scene_4, scene_5, scene_6, scene_7, scene_8, scene_9, scene_10, scene_11, scene_12, scene_13, scene_14, scene_15, scene_16, scene_17, scene_18, scene_19, scene_20]
