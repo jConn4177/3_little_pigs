@@ -89,6 +89,7 @@ This is the decision tree for all the potential storylines.
 
 - story book: "The True Story of the 3 Little Pigs" As told to Jon Scieszka, Illustrated by Lane Smith
 - websites used:
+    - [The Three Little Pigs](https://americanliterature.com/childrens-stories/the-three-little-pigs)
     - [All about the 3 Little Pigs](https://www.gutenberg.org/files/32504/32504-h/32504-h.htm)
     - [The Story of the 3 Little Pigs](https://www.gutenberg.org/files/18155/18155-h/18155-h.htm)
     - [ASCII Art Archive](https://www.asciiart.eu/)
