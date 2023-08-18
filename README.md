@@ -1,6 +1,7 @@
 # 3 Little Pigs
 
-![3 Little Pigs Demo](https://github.com/arbitrary-berry/3_little_pigs/blob/main/3-little-pigs%20demo.mov)
+
+https://github.com/arbitrary-berry/3_little_pigs/assets/128105913/b99de5d1-549a-42ee-a4b5-ae204f73e8e4
 
 ## Introduction
 Everyone knows the story of the 3 little pigs. But this is a little different. Instead of just reading the story you get to choose what happens. It's a choose-your-own-adventure story of the 3 Little Pigs.
